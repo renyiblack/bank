@@ -11,7 +11,7 @@ if __name__ == '__main__':
     Flask(__name__)
 
 
-@app.route("/create_account", methods=["POST"])
+@app.route("/account", methods=["POST"])
 def create_account():
     acc: json = request.get_json()
     try:
