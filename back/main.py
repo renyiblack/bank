@@ -41,3 +41,29 @@ def update_account_balance():
         return "", 204
     except:
         return "failed to update account", 400
+
+
+@app.route("/transfer", methods=["POST"])
+def transfer():
+    acc: json = request.get_json()
+    try:
+        originAccount: Account = accRepo.get_account_by_number(acc["account_number"])
+        destinationAccount: Account = accRepo.get_account_by_number(acc["destination_number"])
+        originAccount.balance -= acc["value"]
+        destinationAccount.balance += acc["value"]
+
+        try:
+            accRepo.update_account(originAccount)
+        except:
+            return "failed to update origin account", 400
+
+        try:
+            accRepo.update_account(destinationAccount)
+        except:
+            originAccount.balance += acc["value"]
+            accRepo.update_account(originAccount)
+            return "failed to complete the transfer", 400
+
+        return "", 204
+    except:
+        return "failed to update account", 400

@@ -2,12 +2,10 @@ import json
 
 
 class Account:
-    id: int
     number: int
     balance: int
 
-    def __init__(self, id: int, number: int):
-        self.id = id
+    def __init__(self, number: int):
         self.number = number
         self.balance = 0
 
