@@ -21,7 +21,7 @@ flask --app main run
 - [x] Consulta Saldo - Solicita um número de conta e exibe o saldo da conta
 - [x] Crédito - Solicita um número e valor e atualiza a conta informada acrescentando o valor informado ao saldo
 - [x] Débito - Solicita um número e valor. Atualiza a conta informada subtraindo o valor informado ao saldo
-- [ ] Transferência - Solicita o número de conta de origem, número de conta de destino e valor a ser transferido. Realiza o débito da conta de origem e o crédito na conta destino
+- [x] Transferência - Solicita o número de conta de origem, número de conta de destino e valor a ser transferido. Realiza o débito da conta de origem e o crédito na conta destino
 
 # Requisitos adicionais
 - [x] As contas podem ter saldo negativo
