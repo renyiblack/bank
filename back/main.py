@@ -1,16 +1,21 @@
-# This is a sample Python script.
+from flask import Flask, request, json
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from entities.account import Account
+from repositories.account import AccountRepository
 
+app = Flask(__name__)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+accRepo: AccountRepository = AccountRepository()
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    Flask(__name__)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@app.route("/create_account", methods=["POST"])
+def create_account():
+    acc: json = request.get_json()
+    try:
+        accRepo.add_account(acc["number"])
+        return "", 201
+    except:
+        return "failed to create account", 400
