@@ -6,6 +6,15 @@ Criação do banco UFRN
 * Joyce Beatriz
 * Keystone Barreto
 
+# Rodando o projeto
+
+basta executar os seguintes comandos:
+```
+pip install -r requirements.txt
+
+flask --app main run
+```
+
 # Especificação dos requisitos
 
 - [ ] Cadastrar Conta -  Solicita um número e cria uma conta com este número e saldo igual a zero
