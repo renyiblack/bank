@@ -15,7 +15,7 @@ if __name__ == '__main__':
 def create_account():
     acc: json = request.get_json()
     try:
-        accRepo.add_account(acc["number"])
+        accRepo.add_account(acc["account_number"])
         return "", 201
     except:
         return "failed to create account", 400
@@ -35,7 +35,7 @@ def get_balance(account):
 def update_account_balance():
     acc: json = request.get_json()
     try:
-        account: Account = accRepo.get_account_by_number(acc["number"])
+        account: Account = accRepo.get_account_by_number(acc["account_number"])
         account.balance += acc["transaction"]
         accRepo.update_account(account)
         return "", 204
