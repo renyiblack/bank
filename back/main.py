@@ -11,7 +11,7 @@ if __name__ == '__main__':
     Flask(__name__)
 
 
-@app.route("/create_account", methods=["POST"])
+@app.route("/account", methods=["POST"])
 def create_account():
     acc: json = request.get_json()
     try:
@@ -19,3 +19,13 @@ def create_account():
         return "", 201
     except:
         return "failed to create account", 400
+
+
+@app.route("/balance/<int:account>", methods=["GET"])
+def get_balance(account):
+    try:
+        acc: Account = accRepo.get_account_by_number(account)
+        return repr(acc.balance), 200
+    except Exception as e:
+        print(e)
+        return "failed to locate account", 400
