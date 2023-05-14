@@ -1,16 +1,34 @@
-# This is a sample Python script.
+def showMenu():
+    print("+--------------------+")
+    print("|        MENU        |")
+    print("+--------------------+")
+    print("| 0 - Exit           |")
+    print("| 1 - Create Account |")
+    print("| 2 - Get Balance    |")
+    print("| 3 - Deposit        |")
+    print("| 4 - Debit          |")
+    print("| 5 - Transfer       |")
+    print("+--------------------+")
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    userInput = 0
+    while True:
+        showMenu()
+        userInput = int(input("=> Choose an option:"))
+        
+        match userInput:
+            case 0:
+                print("=> Exit!")
+                break
+            case 1:
+                print("=> Creating account.")
+            case 2:
+                print("=> Getting your balance.")
+            case 3:
+                print("=> Depositing in the account.")
+            case 4:
+                print("=> Debiting from the account.")
+            case 5:
+                print("=> Transferring money.")
+            case _:
+                print("=> Invalid Option!")
