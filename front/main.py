@@ -1,3 +1,7 @@
+import requests
+
+baseURL = "http://localhost:5000"
+
 def showMenu():
     print("+--------------------+")
     print("|        MENU        |")
@@ -10,6 +14,20 @@ def showMenu():
     print("| 5 - Transfer       |")
     print("+--------------------+")
 
+def create_account(number):
+    data = {
+        "account_number": number
+    }
+    response = requests.post(baseURL + "/account", json = data)
+    print(response)
+
+def get_balance(number):
+    response = requests.get(baseURL + f"/balance/{number}")
+    if(response.status_code == 200):
+        print("=> Account balance is " + response.text)
+    else:    
+        print("=> " + response.text)
+
 if __name__ == '__main__':
     userInput = 0
     while True:
@@ -21,9 +39,11 @@ if __name__ == '__main__':
                 print("=> Exit!")
                 break
             case 1:
-                print("=> Creating account.")
+                account_number = int(input("=> Enter account number:"))
+                create_account(account_number)
             case 2:
-                print("=> Getting your balance.")
+                account_number = int(input("=> Enter account number:"))
+                get_balance(account_number)
             case 3:
                 print("=> Depositing in the account.")
             case 4:
