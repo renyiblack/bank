@@ -9,7 +9,7 @@ def showMenu():
     print("| 0 - Exit           |")
     print("| 1 - Create Account |")
     print("| 2 - Get Balance    |")
-    print("| 3 - Credit         |")
+    print("| 3 - Deposit        |")
     print("| 4 - Debit          |")
     print("| 5 - Transfer       |")
     print("+--------------------+")
@@ -18,28 +18,19 @@ def create_account(number):
     data = {
         "account_number": number
     }
-    response = requests.post(baseURL + "/account", json = data)
-    print(response)
+    response = requests.post(baseURL + "/account", json=data)
+    if response.status_code == 201:
+        print("Account created successfully! Account number:", number)
+    else:
+        print("Failed to create account. Status:", response.status_code)
+
 
 def get_balance(number):
     response = requests.get(baseURL + f"/balance/{number}")
     if(response.status_code == 200):
         print("=> Account balance is " + response.text)
-    else:
+    else:    
         print("=> " + response.text)
-
-def credit(account_number, value):
-    data = {
-        "account_number": account_number,
-        "transaction": value
-    }
-    response = requests.put(baseURL + "/balance", json = data)
-
-    if(response.status_code == 204):
-        print("=> Account updated succefully!")
-    else:
-        print("=> " + response.text)
-
 
 if __name__ == '__main__':
     userInput = 0
@@ -58,9 +49,7 @@ if __name__ == '__main__':
                 account_number = int(input("=> Enter account number:"))
                 get_balance(account_number)
             case 3:
-                account_number = int(input("=> Enter account number:"))
-                value = int(input("=> Enter the amount to deposit:"))
-                credit(account_number, value)
+                print("=> Depositing in the account.")
             case 4:
                 print("=> Debiting from the account.")
             case 5:
