@@ -18,8 +18,8 @@ def show_menu():
     print("| 3 - Credit         |")
     print("| 4 - Debit          |")
     print("| 5 - Transfer       |")
+    print("| 6 - Yield Interest |")
     print("+--------------------+")
-
 
 def show_create_account_menu():
     print("+---------------------------+")
@@ -137,6 +137,17 @@ def update_points(account_number, points):
 def calculate_bonus_points(amount):
     return amount // 100 if amount > 0 else 0
 
+def interest(account_number, rate):
+    data = {
+        "account_number": account_number,
+        "rate": rate
+    }
+    response = requests.put(baseURL + "/interest", json=data)
+
+    if response.status_code == 204:
+        print("=> Account updated successfully!")
+    else:
+        print("=> " + response.text)
 
 if __name__ == '__main__':
     userInput = 0
@@ -175,5 +186,9 @@ if __name__ == '__main__':
                 destination_account = int(input("=> Enter destination account number:"))
                 value = int(input("=> Enter the amount to transfer:"))
                 transfer(source_account, destination_account, value)
+            case 6:
+                account_number = int(input("=> Enter account number:"))
+                rate = float(input("=> Enter the interest rate:"))
+                interest(account_number, rate)
             case _:
                 print("=> Invalid Option!")

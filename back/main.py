@@ -98,3 +98,14 @@ def transfer():
         return "", 204
     except:
         return "failed to update account", 400
+
+@app.route("/interest", methods=["PUT"])
+def yield_interest():
+    acc: json = request.get_json()
+    try:
+        account: Account = accRepo.get_account_by_number(acc["account_number"])
+        account.yield_interest(float(acc["rate"]))
+        accRepo.update_account(account)
+        return "", 204
+    except:
+        return "this account type cannot yield interest", 400
