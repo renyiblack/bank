@@ -33,10 +33,32 @@ def get_balance(account):
         return "failed to locate account", 400
 
 
-@app.route("/balance", methods=["PUT"])
-def update_account_balance():
+@app.route("/debit", methods=["PUT"])
+def debit_account():
     acc: json = request.get_json()
     try:
+        if acc["transaction"] < 0:
+            return "value can't be negative", 400
+
+        account: Account = accRepo.get_account_by_number(acc["account_number"])
+        account.update_balance(acc["transaction"] * -1)
+        accRepo.update_account(account)
+        return "", 204
+    except AccountNotFound as e:
+        return "failed to update account. Account not found", 400
+    except InsufficientFunds as e:
+        return "failed to update account. Insufficient funds", 400
+    except:
+        return "failed to update account.", 400
+
+
+@app.route("/credit", methods=["PUT"])
+def credit_to_account():
+    acc: json = request.get_json()
+    try:
+        if acc["transaction"] < 0:
+            return "value can't be negative", 400
+
         account: Account = accRepo.get_account_by_number(acc["account_number"])
         account.update_balance(acc["transaction"])
         accRepo.update_account(account)
@@ -45,12 +67,17 @@ def update_account_balance():
         return "failed to update account. Account not found", 400
     except InsufficientFunds as e:
         return "failed to update account. Insufficient funds", 400
+    except:
+        return "failed to update account.", 400
 
 
 @app.route("/transfer", methods=["POST"])
 def transfer():
     acc: json = request.get_json()
     try:
+        if acc["value"] < 0:
+            return "value can't be negative", 400
+
         origin_account: Account = accRepo.get_account_by_number(acc["account_number"])
         destination_account: Account = accRepo.get_account_by_number(acc["destination_number"])
         origin_account.update_balance(acc["value"] * -1)
