@@ -69,7 +69,7 @@ def credit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + "/balance", json=data)
+    response = requests.put(baseURL + "/credit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -84,9 +84,9 @@ def credit(account_number, value):
 def debit(account_number, value):
     data = {
         "account_number": account_number,
-        "transaction": -value
+        "transaction": value
     }
-    response = requests.put(baseURL + "/balance", json=data)
+    response = requests.put(baseURL + "/debit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
