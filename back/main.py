@@ -1,6 +1,7 @@
 from flask import Flask, request, json
 
 from entities.account import Account
+from entities.savings_account import SavingsAccount
 from errors.account_not_found import AccountNotFound
 from errors.insufficient_funds import InsufficientFunds
 from repositories.account import AccountRepository
@@ -99,11 +100,12 @@ def transfer():
     except:
         return "failed to update account", 400
 
+
 @app.route("/interest", methods=["PUT"])
 def yield_interest():
     acc: json = request.get_json()
     try:
-        account: Account = accRepo.get_account_by_number(acc["account_number"])
+        account: SavingsAccount = SavingsAccount(accRepo.get_account_by_number(acc["account_number"]))
         account.yield_interest(float(acc["rate"]))
         accRepo.update_account(account)
         return "", 204
