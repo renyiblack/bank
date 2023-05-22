@@ -2,7 +2,8 @@ import requests
 
 baseURL = "http://localhost:5000"
 
-def showMenu():
+
+def show_menu():
     print("+--------------------+")
     print("|        MENU        |")
     print("+--------------------+")
@@ -14,6 +15,7 @@ def showMenu():
     print("| 5 - Transfer       |")
     print("+--------------------+")
 
+
 def create_account(number):
     data = {
         "account_number": number
@@ -24,12 +26,14 @@ def create_account(number):
     else:
         print("Failed to create account. Status:", response.status_code)
 
+
 def get_balance(number):
     response = requests.get(baseURL + f"/balance/{number}")
     if response.status_code == 200:
         print("=> Account balance is " + response.text)
     else:
         print("=> " + response.text)
+
 
 def credit(account_number, value):
     data = {
@@ -43,6 +47,7 @@ def credit(account_number, value):
     else:
         print("=> " + response.text)
 
+
 def debit(account_number, value):
     data = {
         "account_number": account_number,
@@ -55,46 +60,25 @@ def debit(account_number, value):
     else:
         print("=> " + response.text)
 
+
 def transfer(source_account, destination_account, value):
-    # Verifica o saldo da conta de origem
-    response = requests.get(baseURL + f"/balance/{source_account}")
-    if response.status_code != 200:
-        print("=> Failed to transfer. Source account not found.")
-        return
-
-    source_balance = float(response.text)
-    
-    # Verifica se há saldo suficiente na conta de origem
-    if source_balance < value:
-        print("=> Failed to transfer. Insufficient funds in the source account.")
-        return
-
-    # Realiza o débito da conta de origem
-    debit_data = {
+    transfer_data = {
         "account_number": source_account,
-        "transaction": -value
+        "destination_number": destination_account,
+        "value": value
     }
-    response = requests.put(baseURL + "/balance", json=debit_data)
+    response = requests.post(baseURL + "/transfer", json=transfer_data)
     if response.status_code != 204:
-        print("=> Failed to transfer. Error debiting the source account.")
-        return
-
-    # Realiza o crédito na conta de destino
-    credit_data = {
-        "account_number": destination_account,
-        "transaction": value
-    }
-    response = requests.put(baseURL + "/balance", json=credit_data)
-    if response.status_code != 204:
-        print("=> Failed to transfer. Error crediting the destination account.")
+        print("=> Failed to transfer. " + response.text)
         return
 
     print("=> Transfer successful!")
 
+
 if __name__ == '__main__':
     userInput = 0
     while True:
-        showMenu()
+        show_menu()
         userInput = int(input("=> Choose an option:"))
 
         match userInput:
