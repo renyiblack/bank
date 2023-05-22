@@ -1,6 +1,11 @@
-from account import Account
+from entities.account import Account
+
 
 class SavingsAccount(Account):
 
-    def yield_interest(rate: float):
-        super.balance += super.balance * (1 + rate/100)
+    def __init__(self, acc: Account):
+        super().__init__(acc.number)
+        self.balance = acc.balance
+
+    def yield_interest(self, rate: float):
+        self.balance += self.balance * (rate / 100)
