@@ -1,6 +1,7 @@
 import typing
 
 from entities.account import Account
+from errors.account_not_found import AccountNotFound
 
 
 class AccountRepository:
@@ -22,4 +23,4 @@ class AccountRepository:
         try:
             self.__accounts[acc.number] = acc
         except:
-            raise Exception("account not found")
+            raise AccountNotFound()

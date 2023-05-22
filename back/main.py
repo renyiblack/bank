@@ -1,6 +1,8 @@
 from flask import Flask, request, json
 
 from entities.account import Account
+from errors.account_not_found import AccountNotFound
+from errors.insufficient_funds import InsufficientFunds
 from repositories.account import AccountRepository
 
 app = Flask(__name__)
@@ -36,11 +38,13 @@ def update_account_balance():
     acc: json = request.get_json()
     try:
         account: Account = accRepo.get_account_by_number(acc["account_number"])
-        account.balance += acc["transaction"]
+        account.update_balance(acc["transaction"])
         accRepo.update_account(account)
         return "", 204
-    except:
-        return "failed to update account", 400
+    except AccountNotFound as e:
+        return "failed to update account. Account not found", 400
+    except InsufficientFunds as e:
+        return "failed to update account. Insufficient funds", 400
 
 
 @app.route("/transfer", methods=["POST"])
@@ -49,8 +53,8 @@ def transfer():
     try:
         origin_account: Account = accRepo.get_account_by_number(acc["account_number"])
         destination_account: Account = accRepo.get_account_by_number(acc["destination_number"])
-        origin_account.balance -= acc["value"]
-        destination_account.balance += acc["value"]
+        origin_account.update_balance(acc["value"] * -1)
+        destination_account.update_balance(acc["value"])
 
         try:
             accRepo.update_account(origin_account)
@@ -60,7 +64,7 @@ def transfer():
         try:
             accRepo.update_account(destination_account)
         except:
-            origin_account.balance += acc["value"]
+            origin_account.update_balance(acc["value"])
             accRepo.update_account(origin_account)
             return "failed to complete the transfer", 400
 
