@@ -4,8 +4,8 @@ from entities.account import Account
 class BonusAccount(Account):
     points: int
 
-    def __init__(self, number: int):
-        super().__init__(number)
+    def __init__(self, number: int, balance: int):
+        super().__init__(number, balance)
         self.points = 10
 
     def add_points(self, value: int, op: str):

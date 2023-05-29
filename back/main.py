@@ -1,6 +1,7 @@
 from flask import Flask, request, json
 
 from entities.account import Account
+from entities.bonus_account import BonusAccount
 from errors.account_not_found import AccountNotFound
 from errors.insufficient_funds import InsufficientFunds
 from repositories.account import AccountRepository
@@ -17,7 +18,7 @@ if __name__ == '__main__':
 def create_account():
     acc: json = request.get_json()
     try:
-        if type(acc["initial_value"]) is None:
+        if acc["account_type"] == "normal" and type(acc["initial_value"]) is None:
             return "failed to create account. Account must have an initial value", 400
 
         accRepo.add_account(acc["account_number"], acc["account_type"], acc["initial_value"])
