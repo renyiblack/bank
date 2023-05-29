@@ -31,29 +31,16 @@ def show_create_account_menu():
     print("+---------------------------+")
 
 
-def create_account(number):
+def create_account(number, acc_type):
     data = {
-        "account_number": number
+        "account_number": number,
+        "account_type": acc_type
     }
     response = requests.post(baseURL + "/account", json=data)
     if response.status_code == 201:
         print("Account created successfully! Account number:", number)
     else:
         print("Failed to create account. Status:", response.status_code)
-
-
-def create_bonus_account(number):
-    data = {
-        "account_number": number,
-        "account_type": "Bonus",
-        "points": 10
-    }
-    response = requests.post(baseURL + "/account", json=data)
-    if response.status_code == 201:
-        print("Bonus account created successfully! Account number:", number)
-        print("Initial points:", data["points"])
-    else:
-        print("Failed to create bonus account. Status:", response.status_code)
 
 
 def get_balance(number):
@@ -73,10 +60,6 @@ def credit(account_number, value):
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
-        if value > 0:
-            account_type = get_account_type(account_number)
-            if account_type == "Bonus":
-                update_points(account_number, calculate_bonus_points(value))
     else:
         print("=> " + response.text)
 
@@ -106,36 +89,7 @@ def transfer(source_account, destination_account, value):
         return
 
     print("=> Transfer successful!")
-    account_type = get_account_type(destination_account)
-    if account_type == "Bonus":
-        update_points(destination_account, calculate_bonus_points(value))
 
-
-def get_account_type(number):
-    response = requests.get(baseURL + f"/account/{number}")
-    if response.status_code == 200:
-        account = response.json()
-        return account.get("account_type")
-    else:
-        print("=> Failed to get account type. " + response.text)
-        return None
-
-
-def update_points(account_number, points):
-    data = {
-        "account_number": account_number,
-        "points": points
-    }
-    response = requests.put(baseURL + "/points", json=data)
-
-    if response.status_code == 204:
-        print("=> Points updated successfully!")
-    else:
-        print("=> " + response.text)
-
-
-def calculate_bonus_points(amount):
-    return amount // 100 if amount > 0 else 0
 
 def interest(account_number, rate):
     data = {
@@ -160,16 +114,18 @@ if __name__ == '__main__':
                 print("=> Exit!")
                 break
             case 1:
+                account_number = int(input("=> Enter account number:"))
                 show_create_account_menu()
                 account_type = int(input("=> Choose an account type:"))
-                if account_type in [1, 2, 3]:
-                    account_number = int(input("=> Enter account number:"))
-                    if account_type == 2:
-                        create_bonus_account(account_number)
-                    else:
-                        create_account(account_number)
-                else:
-                    print("=> Invalid account type!")
+                match account_type:
+                    case 1:
+                        create_account(account_number, "normal")
+                    case 2:
+                        create_account(account_number, "bonus")
+                    case 3:
+                        create_account(account_number, "savings")
+                    case _:
+                        print("=> Invalid account type!")
             case 2:
                 account_number = int(input("=> Enter account number:"))
                 get_balance(account_number)
