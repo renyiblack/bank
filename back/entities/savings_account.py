@@ -4,6 +4,10 @@ from errors.insufficient_funds import InsufficientFunds
 
 class SavingsAccount(Account):
 
+    def __init__(self, acc: Account, initial_value: float):
+        super().__init__(acc.number)
+        self.balance = initial_value
+
     def update_balance(self, balance: float):
         temp_balance: float = self.balance + balance
 

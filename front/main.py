@@ -21,6 +21,7 @@ def show_menu():
     print("| 6 - Yield Interest |")
     print("+--------------------+")
 
+
 def show_create_account_menu():
     print("+--------------------+")
     print("|   CREATE ACCOUNT   |")
@@ -32,9 +33,14 @@ def show_create_account_menu():
 
 
 def create_account(number, acc_type):
+    initial_value = 0
+    if acc_type == "savings":
+        initial_value = int(input("=> Enter initial value:"))
+
     data = {
         "account_number": number,
-        "account_type": acc_type
+        "account_type": acc_type,
+        "initial_value": initial_value,
     }
     response = requests.post(baseURL + "/account", json=data)
     if response.status_code == 201:
@@ -102,6 +108,7 @@ def interest(account_number, rate):
         print("=> Account updated successfully!")
     else:
         print("=> " + response.text)
+
 
 if __name__ == '__main__':
     userInput = 0
