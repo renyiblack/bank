@@ -120,4 +120,4 @@ def yield_interest():
         accRepo.update_account(account)
         return "", 204
     except:
-        return "this account type cannot yield interest", 400
+        return "this account cannot yield interest", 400

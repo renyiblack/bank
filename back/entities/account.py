@@ -14,7 +14,7 @@ class Account:
     def update_balance(self, balance: float):
         temp_balance: float = self.balance + balance
 
-        if temp_balance < 0:
+        if temp_balance < -1000:
             raise InsufficientFunds()
 
         self.balance = temp_balance

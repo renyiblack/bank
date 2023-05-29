@@ -23,13 +23,13 @@ def show_menu():
 
 
 def show_create_account_menu():
-    print("+---------------------------+")
-    print("|    CREATE ACCOUNT MENU    |")
-    print("+---------------------------+")
-    print("| 1 - Normal                |")
-    print("| 2 - Bonus                 |")
-    print("| 3 - Savings               |")
-    print("+---------------------------+")
+    print("+--------------------+")
+    print("|   CREATE ACCOUNT   |")
+    print("+--------------------+")
+    print("| 1 - Normal         |")
+    print("| 2 - Bonus          |")
+    print("| 3 - Savings        |")
+    print("+--------------------+")
 
 
 def create_account(number, acc_type):
