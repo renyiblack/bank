@@ -17,7 +17,10 @@ if __name__ == '__main__':
 def create_account():
     acc: json = request.get_json()
     try:
-        accRepo.add_account(acc["account_number"])
+        if type(acc["initial_value"]) is None:
+            return "failed to create account. Account must have an initial value", 400
+
+        accRepo.add_account(acc["account_number"], acc["initial_value"])
         return "", 201
     except:
         return "failed to create account", 400

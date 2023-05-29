@@ -17,9 +17,14 @@ def show_menu():
 
 
 def create_account(number):
+    initial_value = int(input("=> Enter initial value:"))
+
     data = {
-        "account_number": number
+        "account_number": number,
+        "account_type": "normal",
+        "initial_value": initial_value,
     }
+
     response = requests.post(baseURL + "/account", json=data)
     if response.status_code == 201:
         print("Account created successfully! Account number:", number)
