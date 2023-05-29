@@ -13,6 +13,6 @@ class BonusAccount(Account):
             points_to_add = int(value/100)
             self.points += points_to_add
         elif op == "transfer":
-            points_to_add = int(value/200)
+            points_to_add = int(value/150)
             self.points += points_to_add
         
