@@ -7,9 +7,9 @@ class Account:
     number: int
     balance: float
 
-    def __init__(self, number: int):
+    def __init__(self, number: int, balance: int):
         self.number = number
-        self.balance = 0
+        self.balance = balance
 
     def update_balance(self, balance: float):
         temp_balance: float = self.balance + balance
