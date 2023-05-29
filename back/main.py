@@ -1,6 +1,7 @@
 from flask import Flask, request, json
 
 from entities.account import Account
+from entities.bonus_account import BonusAccount
 from errors.account_not_found import AccountNotFound
 from errors.insufficient_funds import InsufficientFunds
 from repositories.account import AccountRepository
@@ -17,10 +18,10 @@ if __name__ == '__main__':
 def create_account():
     acc: json = request.get_json()
     try:
-        if type(acc["initial_value"]) is None:
+        if acc["account_type"] == "normal" and type(acc["initial_value"]) is None:
             return "failed to create account. Account must have an initial value", 400
 
-        accRepo.add_account(acc["account_number"], acc["initial_value"])
+        accRepo.add_account(acc["account_number"], acc["account_type"], acc["initial_value"])
         return "", 201
     except:
         return "failed to create account", 400
@@ -29,7 +30,9 @@ def create_account():
 @app.route("/balance/<int:account>", methods=["GET"])
 def get_balance(account):
     try:
-        acc: Account = accRepo.get_account_by_number(account)
+        acc = accRepo.get_account_by_number(account)
+        if type(acc) is BonusAccount:
+            print(f"Account points: {acc.points}")
         return repr(acc.balance), 200
     except Exception as e:
         print(e)
@@ -62,9 +65,11 @@ def credit_to_account():
         if acc["transaction"] < 0:
             return "value can't be negative", 400
 
-        account: Account = accRepo.get_account_by_number(acc["account_number"])
+        account = accRepo.get_account_by_number(acc["account_number"])
         account.update_balance(acc["transaction"])
         accRepo.update_account(account)
+        if type(account) is BonusAccount:
+            account.add_points(acc["transaction"], "credit")
         return "", 204
     except AccountNotFound as e:
         return "failed to update account. Account not found", 400
@@ -82,9 +87,11 @@ def transfer():
             return "value can't be negative", 400
 
         origin_account: Account = accRepo.get_account_by_number(acc["account_number"])
-        destination_account: Account = accRepo.get_account_by_number(acc["destination_number"])
+        destination_account = accRepo.get_account_by_number(acc["destination_number"])
         origin_account.update_balance(acc["value"] * -1)
         destination_account.update_balance(acc["value"])
+        if type(destination_account) is BonusAccount:
+            destination_account.add_points(acc["value"], "transfer")
 
         try:
             accRepo.update_account(origin_account)
@@ -101,3 +108,15 @@ def transfer():
         return "", 204
     except:
         return "failed to update account", 400
+
+
+@app.route("/interest", methods=["PUT"])
+def yield_interest():
+    acc: json = request.get_json()
+    try:
+        account = accRepo.get_account_by_number(acc["account_number"])
+        account.yield_interest(float(acc["rate"]))
+        accRepo.update_account(account)
+        return "", 204
+    except:
+        return "this account type cannot yield interest", 400

@@ -2,6 +2,11 @@ import requests
 
 baseURL = "http://localhost:5000"
 
+bonus_points = {
+    "deposit": 1,
+    "transfer_received": 1
+}
+
 
 def show_menu():
     print("+--------------------+")
@@ -13,18 +18,29 @@ def show_menu():
     print("| 3 - Credit         |")
     print("| 4 - Debit          |")
     print("| 5 - Transfer       |")
+    print("| 6 - Yield Interest |")
     print("+--------------------+")
 
+def show_create_account_menu():
+    print("+---------------------------+")
+    print("|    CREATE ACCOUNT MENU    |")
+    print("+---------------------------+")
+    print("| 1 - Normal                |")
+    print("| 2 - Bonus                 |")
+    print("| 3 - Poupança              |")
+    print("+---------------------------+")
 
-def create_account(number):
-    initial_value = int(input("=> Enter initial value:"))
+
+def create_account(number, acc_type):
+    initial_value = 0
+    if acc_type == "normal":
+        initial_value = int(input("=> Enter initial value:"))
 
     data = {
         "account_number": number,
-        "account_type": "normal",
+        "account_type": acc_type,
         "initial_value": initial_value,
     }
-
     response = requests.post(baseURL + "/account", json=data)
     if response.status_code == 201:
         print("Account created successfully! Account number:", number)
@@ -80,6 +96,18 @@ def transfer(source_account, destination_account, value):
     print("=> Transfer successful!")
 
 
+def interest(account_number, rate):
+    data = {
+        "account_number": account_number,
+        "rate": rate
+    }
+    response = requests.put(baseURL + "/interest", json=data)
+
+    if response.status_code == 204:
+        print("=> Account updated successfully!")
+    else:
+        print("=> " + response.text)
+
 if __name__ == '__main__':
     userInput = 0
     while True:
@@ -92,7 +120,17 @@ if __name__ == '__main__':
                 break
             case 1:
                 account_number = int(input("=> Enter account number:"))
-                create_account(account_number)
+                show_create_account_menu()
+                account_type = int(input("=> Choose an account type:"))
+                match account_type:
+                    case 1:
+                        create_account(account_number, "normal")
+                    case 2:
+                        create_account(account_number, "bonus")
+                    case 3:
+                        create_account(account_number, "savings")
+                    case _:
+                        print("=> Invalid account type!")
             case 2:
                 account_number = int(input("=> Enter account number:"))
                 get_balance(account_number)
@@ -109,5 +147,9 @@ if __name__ == '__main__':
                 destination_account = int(input("=> Enter destination account number:"))
                 value = int(input("=> Enter the amount to transfer:"))
                 transfer(source_account, destination_account, value)
+            case 6:
+                account_number = int(input("=> Enter account number:"))
+                rate = float(input("=> Enter the interest rate:"))
+                interest(account_number, rate)
             case _:
                 print("=> Invalid Option!")
