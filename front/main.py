@@ -32,9 +32,14 @@ def show_create_account_menu():
 
 
 def create_account(number, acc_type):
+    initial_value = 0
+    if acc_type == "normal":
+        initial_value = int(input("=> Enter initial value:"))
+
     data = {
         "account_number": number,
-        "account_type": acc_type
+        "account_type": acc_type,
+        "initial_value": initial_value,
     }
     response = requests.post(baseURL + "/account", json=data)
     if response.status_code == 201:

@@ -1,8 +1,6 @@
 from flask import Flask, request, json
 
 from entities.account import Account
-from entities.savings_account import SavingsAccount
-from entities.bonus_account import BonusAccount
 from errors.account_not_found import AccountNotFound
 from errors.insufficient_funds import InsufficientFunds
 from repositories.account import AccountRepository
@@ -18,9 +16,11 @@ if __name__ == '__main__':
 @app.route("/account", methods=["POST"])
 def create_account():
     acc: json = request.get_json()
-    print(acc)
     try:
-        accRepo.add_account(acc["account_number"], acc["account_type"])
+        if type(acc["initial_value"]) is None:
+            return "failed to create account. Account must have an initial value", 400
+
+        accRepo.add_account(acc["account_number"], acc["account_type"], acc["initial_value"])
         return "", 201
     except:
         return "failed to create account", 400
