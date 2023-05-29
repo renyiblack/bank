@@ -12,11 +12,11 @@ class AccountRepository:
     def __init__(self):
         self.__accounts = {}
 
-    def add_account(self, acc: int, type: str):
+    def add_account(self, acc: int, type: str, initial_value: float):
         if type == "bonus":
             self.__accounts[acc] = BonusAccount(acc)
         elif type == "savings":
-            self.__accounts[acc] = SavingsAccount(acc)
+            self.__accounts[acc] = SavingsAccount(Account(acc), initial_value)
         else:
             self.__accounts[acc] = Account(acc)
 
