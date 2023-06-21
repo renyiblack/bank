@@ -80,7 +80,7 @@ def credit_to_account():
         return "failed to update account.", 400
 
 
-@app.route("/bank/account/transfer", methods=["POST"])
+@app.route("/bank/transfer", methods=["POST"])
 def transfer():
     acc: json = request.get_json()
     try:
