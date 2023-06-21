@@ -59,6 +59,7 @@ def get_balance(number):
 
 def credit(account_number, value):
     data = {
+        "account_number": account_number,
         "transaction": value
     }
     response = requests.post(baseURL + f"/bank/account/{account_number}/debit", json=data)
@@ -71,6 +72,7 @@ def credit(account_number, value):
 
 def debit(account_number, value):
     data = {
+        "account_number": account_number,
         "transaction": value
     }
     response = requests.put(baseURL + f"/bank/account/{account_number}/debit", json=data)
