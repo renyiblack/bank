@@ -87,7 +87,7 @@ def transfer(source_account, destination_account, value):
         "destination_number": destination_account,
         "value": value
     }
-    response = requests.put(baseURL + "/bank/account/transfer", json=transfer_data)
+    response = requests.post(baseURL + "/bank/account/transfer", json=transfer_data)
     if response.status_code != 204:
         print("=> Failed to transfer. " + response.text)
         return
