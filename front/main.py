@@ -59,10 +59,9 @@ def get_balance(number):
 
 def credit(account_number, value):
     data = {
-        "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + f"/bank/account/{account_number}/debit", json=data)
+    response = requests.post(baseURL + f"/bank/account/{account_number}/debit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -72,7 +71,6 @@ def credit(account_number, value):
 
 def debit(account_number, value):
     data = {
-        "account_number": account_number,
         "transaction": value
     }
     response = requests.put(baseURL + f"/bank/account/{account_number}/debit", json=data)
@@ -102,7 +100,7 @@ def interest(account_number, rate):
         "account_number": account_number,
         "rate": rate
     }
-    response = requests.put(baseURL + "/interest", json=data)
+    response = requests.put(baseURL + "/bank/account/interest", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")

@@ -41,13 +41,13 @@ def get_balance(account):
 
 
 @app.route("/bank/account/<int:account>/debit", methods=["PUT"])
-def debit_account():
+def debit_account(account):
     acc: json = request.get_json()
     try:
         if acc["transaction"] < 0:
             return "value can't be negative", 400
 
-        account: Account = accRepo.get_account_by_number(acc["account_number"])
+        account: Account = accRepo.get_account_by_number(account)
         account.update_balance(acc["transaction"] * -1)
         accRepo.update_account(account)
         return "", 204
@@ -60,13 +60,13 @@ def debit_account():
 
 
 @app.route("/bank/account/<int:account>/credit", methods=["PUT"])
-def credit_to_account():
+def credit_to_account(account):
     acc: json = request.get_json()
     try:
         if acc["transaction"] < 0:
             return "value can't be negative", 400
 
-        account = accRepo.get_account_by_number(acc["account_number"])
+        account = accRepo.get_account_by_number(account)
         account.update_balance(acc["transaction"])
         accRepo.update_account(account)
         if type(account) is BonusAccount:
@@ -80,7 +80,7 @@ def credit_to_account():
         return "failed to update account.", 400
 
 
-@app.route("/bank/account/transfer", methods=["PUT"])
+@app.route("/bank/account/transfer", methods=["POST"])
 def transfer():
     acc: json = request.get_json()
     try:
