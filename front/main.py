@@ -42,7 +42,7 @@ def create_account(number, acc_type):
         "account_type": acc_type,
         "initial_value": initial_value,
     }
-    response = requests.post(baseURL + "/account", json=data)
+    response = requests.post(baseURL + "/bank/account", json=data)
     if response.status_code == 201:
         print("Account created successfully! Account number:", number)
     else:
@@ -50,7 +50,7 @@ def create_account(number, acc_type):
 
 
 def get_balance(number):
-    response = requests.get(baseURL + f"/balance/{number}")
+    response = requests.get(baseURL + f"/bank/account/{number}/balance")
     if response.status_code == 200:
         print("=> Account balance is " + response.text)
     else:
@@ -62,7 +62,7 @@ def credit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + "/credit", json=data)
+    response = requests.put(baseURL + f"/bank/account/{account_number}/debit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -75,7 +75,7 @@ def debit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + "/debit", json=data)
+    response = requests.put(baseURL + f"/bank/account/{account_number}/debit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -89,7 +89,7 @@ def transfer(source_account, destination_account, value):
         "destination_number": destination_account,
         "value": value
     }
-    response = requests.post(baseURL + "/transfer", json=transfer_data)
+    response = requests.put(baseURL + "/bank/account/transfer", json=transfer_data)
     if response.status_code != 204:
         print("=> Failed to transfer. " + response.text)
         return

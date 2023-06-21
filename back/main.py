@@ -14,7 +14,7 @@ if __name__ == '__main__':
     Flask(__name__)
 
 
-@app.route("/account", methods=["POST"])
+@app.route("/bank/account", methods=["POST"])
 def create_account():
     acc: json = request.get_json()
     print(acc)
@@ -28,7 +28,7 @@ def create_account():
         return "failed to create account", 400
 
 
-@app.route("/balance/<int:account>", methods=["GET"])
+@app.route("/bank/account/<int:account>/balance", methods=["GET"])
 def get_balance(account):
     try:
         acc = accRepo.get_account_by_number(account)
@@ -40,7 +40,7 @@ def get_balance(account):
         return "failed to locate account", 400
 
 
-@app.route("/debit", methods=["PUT"])
+@app.route("/bank/account/<int:account>/debit", methods=["PUT"])
 def debit_account():
     acc: json = request.get_json()
     try:
@@ -59,7 +59,7 @@ def debit_account():
         return "failed to update account.", 400
 
 
-@app.route("/credit", methods=["PUT"])
+@app.route("/bank/account/<int:account>/credit", methods=["PUT"])
 def credit_to_account():
     acc: json = request.get_json()
     try:
@@ -80,7 +80,7 @@ def credit_to_account():
         return "failed to update account.", 400
 
 
-@app.route("/transfer", methods=["POST"])
+@app.route("/bank/account/transfer", methods=["PUT"])
 def transfer():
     acc: json = request.get_json()
     try:
@@ -111,7 +111,7 @@ def transfer():
         return "failed to update account", 400
 
 
-@app.route("/interest", methods=["PUT"])
+@app.route("/bank/account/interest", methods=["PUT"])
 def yield_interest():
     acc: json = request.get_json()
     try:
