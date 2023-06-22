@@ -28,10 +28,10 @@ def create_account():
         return "failed to create account", 400
 
 
-@app.route("/bank/account/<int:account>/balance", methods=["GET"])
-def get_balance(account):
+@app.route("/bank/account/<int:acc_number>/balance", methods=["GET"])
+def get_balance(acc_number):
     try:
-        acc = accRepo.get_account_by_number(account)
+        acc = accRepo.get_account_by_number(acc_number)
         if type(acc) is BonusAccount:
             print(f"Account points: {acc.points}")
         return repr(acc.balance), 200
@@ -40,7 +40,7 @@ def get_balance(account):
         return "failed to locate account", 400
 
 
-@app.route("/bank/account/<int:account>/debit", methods=["PUT"])
+@app.route("/bank/account/debit", methods=["PUT"])
 def debit_account():
     acc: json = request.get_json()
     try:
@@ -59,7 +59,7 @@ def debit_account():
         return "failed to update account.", 400
 
 
-@app.route("/bank/account/<int:account>/credit", methods=["PUT"])
+@app.route("/bank/account/credit", methods=["PUT"])
 def credit_to_account():
     acc: json = request.get_json()
     try:
@@ -80,7 +80,7 @@ def credit_to_account():
         return "failed to update account.", 400
 
 
-@app.route("/bank/account/transfer", methods=["PUT"])
+@app.route("/bank/transfer", methods=["POST"])
 def transfer():
     acc: json = request.get_json()
     try:
