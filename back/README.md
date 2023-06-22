@@ -13,6 +13,12 @@ basta executar os seguintes comandos:
 pip install -r requirements.txt
 
 flask --app main run
+
+Caso não dê certo a primeira opção, tente: 
+python -m flask --app main run
+
+Caso ao executar o arquivo apareça o erro sobre requirements.txt, tente: 
+pip install requests
 ```
 
 # Especificação dos requisitos
