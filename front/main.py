@@ -1,4 +1,5 @@
 import requests
+import json
 
 baseURL = "http://localhost:5000"
 
@@ -9,17 +10,18 @@ bonus_points = {
 
 
 def show_menu():
-    print("+--------------------+")
-    print("|        MENU        |")
-    print("+--------------------+")
-    print("| 0 - Exit           |")
-    print("| 1 - Create Account |")
-    print("| 2 - Get Balance    |")
-    print("| 3 - Credit         |")
-    print("| 4 - Debit          |")
-    print("| 5 - Transfer       |")
-    print("| 6 - Yield Interest |")
-    print("+--------------------+")
+    print("+---------------------+")
+    print("|        MENU         |")
+    print("+---------------------+")
+    print("| 0 - Exit            |")
+    print("| 1 - Create Account  |")
+    print("| 2 - Get Balance     |")
+    print("| 3 - Credit          |")
+    print("| 4 - Debit           |")
+    print("| 5 - Transfer        |")
+    print("| 6 - Yield Interest  |")
+    print("| 7 - Get account Data|")
+    print("+---------------------+")
 
 
 def show_create_account_menu():
@@ -62,7 +64,7 @@ def credit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.post(baseURL + "/bank/account/debit", json=data)
+    response = requests.put(baseURL + "/bank/account/credit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -108,6 +110,19 @@ def interest(account_number, rate):
         print("=> Account updated successfully!")
     else:
         print("=> " + response.text)
+        
+
+def get_account_data(number):
+    response = requests.get(baseURL + f"/bank/account/{number}/data")
+    if response.status_code == 200:
+        account_data = json.loads(response.text)
+        print("Type:", account_data["Type"])
+        print("Number:", account_data["Number"])
+        print("Balance:", account_data["Balance"])
+        if account_data["Bonus"]:
+            print("Bonus:", account_data["Bonus"])
+    else:
+        print("Failed to retrieve account data. Account not found.")
 
 
 if __name__ == '__main__':
@@ -153,5 +168,8 @@ if __name__ == '__main__':
                 account_number = int(input("=> Enter account number:"))
                 rate = float(input("=> Enter the interest rate:"))
                 interest(account_number, rate)
+            case 7:
+                account_number = int(input("=> Enter account number:"))
+                account_data = get_account_data(account_number)                         
             case _:
                 print("=> Invalid Option!")
