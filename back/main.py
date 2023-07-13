@@ -14,12 +14,13 @@ if __name__ == '__main__':
     Flask(__name__)
 
 
-@app.route("/account", methods=["POST"])
+@app.route("/bank/account", methods=["POST"])
 def create_account():
     acc: json = request.get_json()
+    print(acc)
     try:
-        if acc["account_type"] == "normal" and type(acc["initial_value"]) is None:
-            return "failed to create account. Account must have an initial value", 400
+        if acc["account_type"] == "savings" and type(acc["initial_value"]) is None:
+            return "failed to create account. Savings Accounts must have initial value", 400
 
         accRepo.add_account(acc["account_number"], acc["account_type"], acc["initial_value"])
         return "", 201
@@ -27,10 +28,10 @@ def create_account():
         return "failed to create account", 400
 
 
-@app.route("/balance/<int:account>", methods=["GET"])
-def get_balance(account):
+@app.route("/bank/account/<int:acc_number>/balance", methods=["GET"])
+def get_balance(acc_number):
     try:
-        acc = accRepo.get_account_by_number(account)
+        acc = accRepo.get_account_by_number(acc_number)
         if type(acc) is BonusAccount:
             print(f"Account points: {acc.points}")
         return repr(acc.balance), 200
@@ -39,7 +40,7 @@ def get_balance(account):
         return "failed to locate account", 400
 
 
-@app.route("/debit", methods=["PUT"])
+@app.route("/bank/account/debit", methods=["PUT"])
 def debit_account():
     acc: json = request.get_json()
     try:
@@ -58,7 +59,7 @@ def debit_account():
         return "failed to update account.", 400
 
 
-@app.route("/credit", methods=["PUT"])
+@app.route("/bank/account/credit", methods=["PUT"])
 def credit_to_account():
     acc: json = request.get_json()
     try:
@@ -79,7 +80,7 @@ def credit_to_account():
         return "failed to update account.", 400
 
 
-@app.route("/transfer", methods=["POST"])
+@app.route("/bank/transfer", methods=["POST"])
 def transfer():
     acc: json = request.get_json()
     try:
@@ -110,7 +111,7 @@ def transfer():
         return "failed to update account", 400
 
 
-@app.route("/interest", methods=["PUT"])
+@app.route("/bank/account/interest", methods=["PUT"])
 def yield_interest():
     acc: json = request.get_json()
     try:
@@ -119,4 +120,23 @@ def yield_interest():
         accRepo.update_account(account)
         return "", 204
     except:
-        return "this account type cannot yield interest", 400
+        return "this account cannot yield interest", 400
+
+@app.route("/bank/account/data", methods=["POST"])
+def get_account_data():
+    try:
+        acc = request.get_json()
+        account = accRepo.get_account_by_number(acc["account_number"])
+        if account is not None:
+            account_data = {
+                "Type": account.account_type,
+                "Number": account.account_number,
+                "Balance": account.balance,
+                "Bonus": getattr(account, "bonus", None)
+            }
+            return json.dumps(account_data), 200
+        else:
+            return "Failed to retrieve account data. Account not found.", 404
+    except Exception as e:
+        logging.exception("An error occurred while retrieving account data.")
+        return "Failed to retrieve account data. Error: " + str(e), 500

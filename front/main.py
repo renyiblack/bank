@@ -1,4 +1,5 @@
 import requests
+import json
 
 baseURL = "http://localhost:5000"
 
@@ -9,31 +10,33 @@ bonus_points = {
 
 
 def show_menu():
-    print("+--------------------+")
-    print("|        MENU        |")
-    print("+--------------------+")
-    print("| 0 - Exit           |")
-    print("| 1 - Create Account |")
-    print("| 2 - Get Balance    |")
-    print("| 3 - Credit         |")
-    print("| 4 - Debit          |")
-    print("| 5 - Transfer       |")
-    print("| 6 - Yield Interest |")
-    print("+--------------------+")
+    print("+---------------------+")
+    print("|        MENU         |")
+    print("+---------------------+")
+    print("| 0 - Exit            |")
+    print("| 1 - Create Account  |")
+    print("| 2 - Get Balance     |")
+    print("| 3 - Credit          |")
+    print("| 4 - Debit           |")
+    print("| 5 - Transfer        |")
+    print("| 6 - Yield Interest  |")
+    print("| 7 - Get account Data|")
+    print("+---------------------+")
+
 
 def show_create_account_menu():
-    print("+---------------------------+")
-    print("|    CREATE ACCOUNT MENU    |")
-    print("+---------------------------+")
-    print("| 1 - Normal                |")
-    print("| 2 - Bonus                 |")
-    print("| 3 - Poupança              |")
-    print("+---------------------------+")
+    print("+--------------------+")
+    print("|   CREATE ACCOUNT   |")
+    print("+--------------------+")
+    print("| 1 - Normal         |")
+    print("| 2 - Bonus          |")
+    print("| 3 - Savings        |")
+    print("+--------------------+")
 
 
 def create_account(number, acc_type):
     initial_value = 0
-    if acc_type == "normal":
+    if acc_type == "savings":
         initial_value = int(input("=> Enter initial value:"))
 
     data = {
@@ -41,7 +44,7 @@ def create_account(number, acc_type):
         "account_type": acc_type,
         "initial_value": initial_value,
     }
-    response = requests.post(baseURL + "/account", json=data)
+    response = requests.post(baseURL + "/bank/account", json=data)
     if response.status_code == 201:
         print("Account created successfully! Account number:", number)
     else:
@@ -49,7 +52,7 @@ def create_account(number, acc_type):
 
 
 def get_balance(number):
-    response = requests.get(baseURL + f"/balance/{number}")
+    response = requests.get(baseURL + f"/bank/account/{number}/balance")
     if response.status_code == 200:
         print("=> Account balance is " + response.text)
     else:
@@ -61,7 +64,7 @@ def credit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + "/credit", json=data)
+    response = requests.put(baseURL + "/bank/account/credit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -74,7 +77,7 @@ def debit(account_number, value):
         "account_number": account_number,
         "transaction": value
     }
-    response = requests.put(baseURL + "/debit", json=data)
+    response = requests.put(baseURL + "/bank/account/debit", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
@@ -88,7 +91,7 @@ def transfer(source_account, destination_account, value):
         "destination_number": destination_account,
         "value": value
     }
-    response = requests.post(baseURL + "/transfer", json=transfer_data)
+    response = requests.post(baseURL + "/bank/transfer", json=transfer_data)
     if response.status_code != 204:
         print("=> Failed to transfer. " + response.text)
         return
@@ -101,12 +104,26 @@ def interest(account_number, rate):
         "account_number": account_number,
         "rate": rate
     }
-    response = requests.put(baseURL + "/interest", json=data)
+    response = requests.put(baseURL + "/bank/account/interest", json=data)
 
     if response.status_code == 204:
         print("=> Account updated successfully!")
     else:
         print("=> " + response.text)
+        
+
+def get_account_data(number):
+    response = requests.get(baseURL + f"/bank/account/{number}/data")
+    if response.status_code == 200:
+        account_data = json.loads(response.text)
+        print("Type:", account_data["Type"])
+        print("Number:", account_data["Number"])
+        print("Balance:", account_data["Balance"])
+        if account_data["Bonus"]:
+            print("Bonus:", account_data["Bonus"])
+    else:
+        print("Failed to retrieve account data. Account not found.")
+
 
 if __name__ == '__main__':
     userInput = 0
@@ -151,5 +168,8 @@ if __name__ == '__main__':
                 account_number = int(input("=> Enter account number:"))
                 rate = float(input("=> Enter the interest rate:"))
                 interest(account_number, rate)
+            case 7:
+                account_number = int(input("=> Enter account number:"))
+                account_data = get_account_data(account_number)                         
             case _:
                 print("=> Invalid Option!")

@@ -7,14 +7,14 @@ class Account:
     number: int
     balance: float
 
-    def __init__(self, number: int, balance: int):
+    def __init__(self, number: int):
         self.number = number
-        self.balance = balance
+        self.balance = 0
 
     def update_balance(self, balance: float):
         temp_balance: float = self.balance + balance
 
-        if temp_balance < 0:
+        if temp_balance < -1000:
             raise InsufficientFunds()
 
         self.balance = temp_balance
