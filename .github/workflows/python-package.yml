@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install requests pytest Flask
+        python -m pip install requests Flask
     - name: Test with unittest
       run: |
           cd front
