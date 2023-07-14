@@ -2,7 +2,7 @@ name: Python package
 
 on:
   push:
-    branches: [ "develop" , "feature/github_actions"]
+    branches: [ "develop" , "feature/github_actions", "feature/lint_and_hooks"]
 
 jobs:
   build:
@@ -26,6 +26,11 @@ jobs:
       run: |
           cd front
           python -m unittest test.py
+    - name: Lint with black
+      run: |
+        pip install black
+        black ./front
+        black ./back
     - name: Create tag
       run: |
           git config --local user.email "actions@github.com"
@@ -34,3 +39,11 @@ jobs:
           git tag "Build-$(date +%s)"
           
           git push origin --tags
+    - name: Zip folder
+      run: |
+          zip -r package.zip .
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-package
+        path: package.zip
