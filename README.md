@@ -18,3 +18,4 @@ Criação do banco UFRN
 - [x] As contas podem ter saldo negativo
 - [x] Não existe limite de número de contas que podem ser criadas
 - [x] A conta deve ter apenas os atributos número e saldo
+- [ ] 
