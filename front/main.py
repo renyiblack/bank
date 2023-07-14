@@ -112,18 +112,20 @@ def interest(account_number, rate):
         print("=> " + response.text)
         
 
-def get_account_data(number):
-    response = requests.get(baseURL + f"/bank/account/{number}/data")
-    if response.status_code == 200:
-        account_data = json.loads(response.text)
-        print("Type:", account_data["Type"])
-        print("Number:", account_data["Number"])
-        print("Balance:", account_data["Balance"])
-        if account_data["Bonus"]:
-            print("Bonus:", account_data["Bonus"])
-    else:
-        print("Failed to retrieve account data. Account not found.")
-
+def get_account_data(account_number):
+    try:
+        response = requests.get(baseURL + f"/bank/account/data?account_number={account_number}")
+        if response.status_code == 200:
+            account_data = json.loads(response.text)
+            print("Type:", account_data["Type"])
+            print("Number:", account_data["Number"])
+            print("Balance:", account_data["Balance"])
+            if account_data["Bonus"]:
+                print("Bonus:", account_data["Bonus"])
+        else:
+            print("Failed to retrieve account data. Account not found.")
+    except requests.exceptions.RequestException as e:
+        print("An error occurred while making the request:", str(e))
 
 if __name__ == '__main__':
     userInput = 0

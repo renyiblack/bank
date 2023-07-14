@@ -122,11 +122,11 @@ def yield_interest():
     except:
         return "this account cannot yield interest", 400
 
-@app.route("/bank/account/data", methods=["POST"])
+@app.route("/bank/account/data", methods=["GET"])
 def get_account_data():
     try:
-        acc = request.get_json()
-        account = accRepo.get_account_by_number(acc["account_number"])
+        acc_number = request.args.get("account_number")
+        account = accRepo.get_account_by_number(acc_number)
         if account is not None:
             account_data = {
                 "Type": account.account_type,
@@ -140,3 +140,4 @@ def get_account_data():
     except Exception as e:
         logging.exception("An error occurred while retrieving account data.")
         return "Failed to retrieve account data. Error: " + str(e), 500
+
