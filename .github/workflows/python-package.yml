@@ -26,3 +26,11 @@ jobs:
       run: |
           cd front
           python -m unittest test.py
+    - name: Create tag
+      run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          
+          git tag "Build-$(date +%s)"
+          
+          git push origin --tags
